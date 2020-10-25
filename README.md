@@ -14,7 +14,7 @@ Inspired by the Discord IslamBot Project (https://github.com/galacticwarrior9/Is
 
 `libcurl4-openssl-dev , qt5-default, nlohmann json`
 * libcurl installation = `sudo apt install libcurl4-openssl-dev`
-* nlohmann json = https://github.com/nlohmann/json , this repo already contain nlohmann json header so no need to clone
+* nlohmann json = https://github.com/nlohmann/json , Download the latest release and put it in the source folder . Make sure header name is json.hpp
 * Qt5 = `sudo apt install qt5-default`
 
 **Installation**
