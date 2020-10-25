@@ -1,7 +1,6 @@
 # qAPP
 
 [![Code Grade](https://www.code-inspector.com/project/15233/status/svg)](https://frontend.code-inspector.com/public/project/15233/qAPP/dashboard)
-![Code Score](https://www.code-inspector.com/project/15233/score/svg)
 
 بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ ,
 السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ
