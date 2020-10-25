@@ -59,11 +59,10 @@
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
+#include <cstdio>
+#include <vector>
 #include "json.hpp"
 #include "translations.h"
-#include <iomanip>
-#include <cstdlib>
-#include <vector>
 
 using json = nlohmann::json;
 
@@ -84,7 +83,7 @@ protected:
 class GUI : protected Parser 
 {
 public:
-    GUI(std::string link)
+    GUI(const std::string link)
     {
         this->url = link;
     }
@@ -182,6 +181,7 @@ void GUI::getayah(std::string buffer)
 {
     json j_parsed = json::parse(buffer);
     QTextEdit *gui = new QTextEdit();
+    // surah Name and Name meaning
     gui->setText(QString::fromStdString(j_parsed["data"]["surah"]["englishName"].get<std::string>()) + " " + "(" + QString::fromStdString(j_parsed["data"]["surah"]["englishNameTranslation"].get<std::string>()) + ")" + "\n");
     QTextCursor cursor = gui->textCursor();
     QTextBlockFormat textBlockFormat = cursor.blockFormat();
@@ -200,14 +200,16 @@ void GUI::getayah(std::string buffer)
 void GUI::getsurah(std::string buffer)
 {
     json j_parsed = json::parse(buffer);
-    int ayahs = j_parsed["data"]["ayahs"].size();
+    int ayahs = j_parsed["data"]["ayahs"].size(); // Number of ayahs
     std::vector<QString>parsed_data;
     int count = 1;
     for(int i=0;i<ayahs;i++)
     {
-        parsed_data.push_back(QString::fromStdString(j_parsed["data"]["ayahs"][i]["text"].get<std::string>()));
+        // push each ayah into vector
+        parsed_data.push_back(QString::fromStdString(j_parsed["data"]["ayahs"][i]["text"].get<std::string>())); 
     }
     QTextEdit *gui = new QTextEdit();
+    // surah Name and Name Meaning
     gui->setText(QString::fromStdString(j_parsed["data"]["englishName"].get<std::string>()) + " ("+ QString::fromStdString(j_parsed["data"]["englishNameTranslation"].get<std::string>()) +")");
     gui->append("\n");
     for(QString ayah : parsed_data)
@@ -216,12 +218,14 @@ void GUI::getsurah(std::string buffer)
         gui->append(data + "\n");
         count++;
     }
+    // Edition Name
     gui->append("Edition : " + QString::fromStdString(j_parsed["data"]["edition"]["name"]));
     QTextCursor cursor = gui->textCursor();
     QTextBlockFormat textBlockFormat = cursor.blockFormat();
     textBlockFormat.setAlignment(Qt::AlignCenter);
     cursor.mergeBlockFormat(textBlockFormat);
     gui->selectAll();
+    // Set Font Size
     gui->setFontPointSize(32);
     gui->setTextCursor(cursor);
     gui->setReadOnly(true);
@@ -289,9 +293,14 @@ int check_option(int argc, char *argv[], int x)
             {
                 std::cout << "\n [surah] and [ayah] must be an integer , provided value = " << argv[x+1] << std::endl;
                 exit(0);
-            } else {
+            } else 
+            {                
+                if(argc == 4)
+                {
+                    edition = return_edition(static_cast<std::string>(argv[x+2]));
+                }
                 url_ayah.append(argv[x+1]);
-                url_ayah.append("/en.sahih");
+                url_ayah.append("/"+edition);
                 GUI Ayah_GUI(url_ayah);
                 Ayah_GUI.process_request(0);
             }
