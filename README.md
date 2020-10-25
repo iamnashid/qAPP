@@ -1,6 +1,9 @@
 # qAPP
 
-An easy to use quran reader with indian languages and english translation support . Made with Qt5
+بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ ,
+السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ
+
+qAPP is an easy to use quran reader with indian languages and english translation support . Made with Qt5
 
 **Dependencies**
 
