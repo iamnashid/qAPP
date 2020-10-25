@@ -13,6 +13,7 @@ Inspired by the Discord IslamBot Project (https://github.com/galacticwarrior9/Is
 **Screenshots**
 
 ![Screenshot 1](https://user-images.githubusercontent.com/72482273/97117939-06cd0a00-172d-11eb-96d8-d80272441425.png)
+![Screenshot 2](https://user-images.githubusercontent.com/72482273/97117993-73e09f80-172d-11eb-8c83-33f6d86ec2a3.png)
 
 **Dependencies**
 
