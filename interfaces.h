@@ -13,10 +13,4 @@ public:
     void getsurah(std::string buffer);
 };
 
-class CLI : protected Parser 
-{
-public:
-    void main_menu();
-};
-
 #endif

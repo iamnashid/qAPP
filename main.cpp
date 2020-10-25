@@ -4,7 +4,7 @@
    *               Specs :- Offline mode [TODO] , Multi-language , easy to use
    * Build-Dependencies : libcurl , qt5 libs, nlohmann json : https://github.com/nlohmann/json/
    * Developer : Nashid
-   * Project Status : Alpha
+   * Project Status : Beta
    *
    * Functions Description:-
    *
@@ -20,35 +20,8 @@
    * int isInt(char *arg)
    *    check if the given argument is Integers , related to ayah processing
    *    return true if all chars except ':' are integers
-   *
-   * std::string curl_process()
-   *    make a GET request to API and return the result in std::string form
-   *
-   * std::size_t WriteMemoryCallback(char* , std::size_t, std::size_t, std::string)
-   *    Function to store the contents of GET Request into MEMORY instead of stdout
-   *
-   * std::size_t write_data(void* , std::size_t, std::size_t, void*)
-   *    Function to store the contents of GET request into FILE instead of stdout
-   *
-   * void process_request(int requestType)
-   *    show ayah or surah in GUI mode , if requestType = 0 , show ayah
-   *    else if requestType = 1 , show surah
-   *
-   * void getayah(std::string str_buffer)
-   *    accept GET request result of ayah and display it in GUI mode
-   *
-   * void getsurah(std::string str_buffer)
-   *    accept GET request result of surah and display it in GUI mode
-   *
-   * void tr_help() { defined in headerfile translations.h }
-   *    show available translations
-   *
-   * std::string request_edition(std::string arg)
-   *    check the arg and return the appropriate translation , if arg is invalid return " " which is pure quran without translation
-   *
-   *
 ***/
-  
+
 #include <QtWidgets/QApplication>
 #include <iostream>
 #include <string>
@@ -62,7 +35,7 @@ void help_menu();
 int check_option(int argc, char *argv[], int x);
 bool isSurah(char *arg);
 bool isInt(char *arg);
-void process_online_option(int argc, char *argv[], int x);
+void process_option(int argc, char *argv[], int x);
 
 int main(int argc, char *argv[])
 {
@@ -103,22 +76,16 @@ void help_menu()
     std::cout << "\t\t\t   qCLI --o 1 sahih , returns surah Al-Fatiha " << std::endl;
     std::cout << "\t --h : " << std::endl;
     std::cout << "\t\t show this help menu and exit " << std::endl;
-    std::cout << "\t --i: " << std::endl;
-    std::cout << "\t\t Not available yet " << std::endl;
     std::cout << "\t --t: " << std::endl;
     std::cout << "\t\t List of available translations " << std::endl;
 }
 
 int check_option(int argc, char *argv[], int x)
 {
-    if(argv[x][2] == 'i') // --i
-    {
-        std::cout << " Not Available yet " << std::endl;
-        exit(0);
-    } 
-    else if(argv[x][2] == 'o' && argc >= 3) // --o
+
+    if(argv[x][2] == 'o' && argc >= 3) // --o
     {    
-        process_online_option(argc,argv,x);
+        process_option(argc,argv,x);
     }
     else if(argv[x][2] == 'h')
     {
@@ -138,7 +105,7 @@ int check_option(int argc, char *argv[], int x)
     return x;
 }
 
-void process_online_option(int argc, char *argv[], int x)
+void process_option(int argc, char *argv[], int x)
 {
     std::string url_ayah = "https://api.alquran.cloud/v1/ayah/";
     std::string url_surah = "https://api.alquran.cloud/v1/surah/";
@@ -183,7 +150,6 @@ void process_online_option(int argc, char *argv[], int x)
         }
     }
 }
-
 
 bool isSurah(char *arg)
 {

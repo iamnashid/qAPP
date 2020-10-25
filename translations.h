@@ -1,3 +1,13 @@
+/***
+   * void tr_help() { defined in headerfile translations.h }
+   *    show available translations
+   *
+   * std::string request_edition(std::string arg)
+   *    check the arg and return the appropriate translation , if arg is invalid return " " which is pure quran without translation
+   *
+***/
+  
+
 #ifndef __TRANSLATIONS_H__
 #define __TRANSLATIONS_H__
 

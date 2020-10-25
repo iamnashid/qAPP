@@ -1,3 +1,16 @@
+/***
+   * void process_request(int requestType)
+   *    show ayah or surah in GUI mode , if requestType = 0 , show ayah
+   *    else if requestType = 1 , show surah
+   *
+   * void getayah(std::string str_buffer)
+   *    accept GET request result of ayah and display it in GUI mode
+   *
+   * void getsurah(std::string str_buffer)
+   *    accept GET request result of surah and display it in GUI mode
+   *
+***/
+
 #include <QtWidgets/QApplication>
 #include <QtCore/QString>
 #include <QtWidgets/QWidget>

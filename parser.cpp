@@ -1,3 +1,14 @@
+/***
+   * std::string curl_process()
+   *    make a GET request to API and return the result in std::string form
+   *
+   * std::size_t WriteMemoryCallback(char* , std::size_t, std::size_t, std::string)
+   *    Function to store the contents of GET Request into MEMORY instead of stdout
+   *
+   * std::size_t write_data(void* , std::size_t, std::size_t, void*)
+   *    Function to store the contents of GET request into FILE instead of stdout
+***/
+
 #include "parser.h"
 #include <string>
 #include <curl/curl.h>
