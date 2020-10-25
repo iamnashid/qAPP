@@ -6,7 +6,7 @@ An easy to use quran reader made with Qt5
 
 `libcurl4-openssl-dev , qt5-default, nlohmann json`
 * libcurl installation = `sudo apt install libcurl4-openssl-dev`
-* nlohmann json = https://github.com/nlohmann/json
+* nlohmann json = https://github.com/nlohmann/json , this repo already contain nlohmann json header so no need to clone
 * Qt5 = `sudo apt install qt5-default`
 
 **Installation**
