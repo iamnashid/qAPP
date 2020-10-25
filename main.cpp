@@ -146,7 +146,7 @@ void process_online_option(int argc, char *argv[], int x)
 
     if(isSurah(argv[x+1]))
     {
-        if(atoi(argv[x+1]) == 0)
+        if(!isInt(argv[x+1]))
         {
             std::cout << "\n [surah] must be an integer , provided value = " << argv[x+1] << std::endl;
             exit(0);
@@ -198,7 +198,7 @@ bool isSurah(char *arg)
 bool isInt(char *arg)
 {
     int arglen = strlen(arg);
-    int intlen = 0;
+    int intlen = -1;
     for(int i=0;arg[i]!= '\0';i++)
     {
         if((arg[i] >= '0' && arg[i] <= '9') && arglen > 2)
