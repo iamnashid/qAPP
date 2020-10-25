@@ -1,6 +1,7 @@
 /***
    * Project Name : qAPP
-   * Description : an easy to use Quran Translation Reading program in Qt5, supports both CLI and GUI
+   * Description : an easy to use Quran Reading program in Qt5, supports translations in indian languages as well
+   *               Specs :- Offline mode [TODO] , Multi-language , easy to use
    * Build-Dependencies : libcurl , qt5 libs, nlohmann json : https://github.com/nlohmann/json/
    * Developer : Nashid
    * Project Status : Alpha
@@ -24,17 +25,27 @@
    *    make a GET request to API and return the result in std::string form
    *
    * std::size_t WriteMemoryCallback(char* , std::size_t, std::size_t, std::string)
-   *    Function to store the contents of GET Request into memory instead of stdout
+   *    Function to store the contents of GET Request into MEMORY instead of stdout
    *
-   * void process_gui(int requestType)
+   * std::size_t write_data(void* , std::size_t, std::size_t, void*)
+   *    Function to store the contents of GET request into FILE instead of stdout
+   *
+   * void process_request(int requestType)
    *    show ayah or surah in GUI mode , if requestType = 0 , show ayah
    *    else if requestType = 1 , show surah
    *
-   * void getayah_gui(std::string str_buffer)
+   * void getayah(std::string str_buffer)
    *    accept GET request result of ayah and display it in GUI mode
    *
-   * void getsurah_gui(std::string str_buffer)
+   * void getsurah(std::string str_buffer)
    *    accept GET request result of surah and display it in GUI mode
+   *
+   * void tr_help() { defined in headerfile translations.h }
+   *    show available translations
+   *
+   * std::string request_edition(std::string arg)
+   *    check the arg and return the appropriate translation , if arg is invalid return " " which is pure quran without translation
+   *
    *
 ***/
   
@@ -49,6 +60,7 @@
 #include <string>
 #include <curl/curl.h>
 #include "json.hpp"
+#include "translations.h"
 #include <iomanip>
 #include <cstdlib>
 #include <vector>
@@ -56,7 +68,7 @@
 using json = nlohmann::json;
 
 void help_menu();
-int check_option(char *argv[], int x);
+int check_option(int argc, char *argv[], int x);
 bool isSurah(char *arg);
 bool isInt(char *arg);
 
@@ -66,6 +78,7 @@ protected:
     std::string url;
     std::string curl_process();
     static std::size_t WriteMemoryCallback(char *in, std::size_t size, std::size_t nmemb, std::string *out);
+    static std::size_t write_data(void *ptr, std::size_t size, std::size_t nmemb, void *stream);
 };
 
 class GUI : protected Parser 
@@ -92,15 +105,15 @@ int main(int argc, char *argv[])
     QApplication qCLI(argc, argv);
     if(argc == 1)
     {
-        help_menu();
+        std::cout << "\n\033[1;31m No arguments provided , use '--h' for help menu \033[0m" << std::endl;
         exit(0);
     }
     for(int x=1;x<argc;x++)
     {
         // check for "--" in arguement
-        if(argv[x][0] == '-' && argv[x][1] == '-' && argc > 2)
+        if(argv[x][0] == '-' && argv[x][1] == '-' && argc >= 2)
         {
-            x = check_option(argv, x);
+            x = check_option(argc, argv, x);
             break;
         }
         else
@@ -112,6 +125,22 @@ int main(int argc, char *argv[])
     return qCLI.exec();
 }
 
+std::size_t Parser::WriteMemoryCallback(char *in, std::size_t size, std::size_t nmemb, std::string *out)
+{
+    std::size_t total_size = size * nmemb;
+    if(total_size)
+    {
+        out->append(in, total_size);
+        return total_size;
+    }
+    return 0;
+}
+
+std::size_t write_data(void *ptr, std::size_t size, std::size_t nmemb, void *stream)
+{
+    std::size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
+    return written;
+}
 
 std::string Parser::curl_process()
 {
@@ -139,18 +168,6 @@ std::string Parser::curl_process()
     return ("Null");
 }
 
-
-std::size_t Parser::WriteMemoryCallback(char *in, std::size_t size, std::size_t nmemb, std::string *out)
-{
-    std::size_t total_size = size * nmemb;
-    if(total_size)
-    {
-        out->append(in, total_size);
-        return total_size;
-    }
-    return 0;
-}
-
 void GUI::process_request(int requestType)
 {
     if(requestType == 0)
@@ -163,12 +180,9 @@ void GUI::process_request(int requestType)
 
 void GUI::getayah(std::string buffer)
 {
-    QString surah_name, surah_translation_name, ayah_translation;
     json j_parsed = json::parse(buffer);
-    std::string surah_translation = "(" + j_parsed["data"]["surah"]["englishNameTranslation"].get<std::string>() + ")";
-    surah_translation_name = "Surah " + QString::fromStdString(j_parsed["data"]["surah"]["englishName"].get<std::string>()) + " " + QString::fromStdString(surah_translation) + "\n";
     QTextEdit *gui = new QTextEdit();
-    gui->setText(surah_name);
+    gui->setText(QString::fromStdString(j_parsed["data"]["surah"]["englishName"].get<std::string>()) + " " + "(" + QString::fromStdString(j_parsed["data"]["surah"]["englishNameTranslation"].get<std::string>()) + ")" + "\n");
     QTextCursor cursor = gui->textCursor();
     QTextBlockFormat textBlockFormat = cursor.blockFormat();
     textBlockFormat.setAlignment(Qt::AlignCenter);
@@ -186,10 +200,7 @@ void GUI::getayah(std::string buffer)
 
 void GUI::getsurah(std::string buffer)
 {
-    QString surah_name, surah_translation_name;
     json j_parsed = json::parse(buffer);
-    surah_name = QString::fromStdString(j_parsed["data"]["englishName"].get<std::string>());
-    surah_translation_name = QString::fromStdString(j_parsed["data"]["englishNameTranslation"].get<std::string>());
     int ayahs = j_parsed["data"]["ayahs"].size();
     std::vector<QString>parsed_data;
     int count = 1;
@@ -198,22 +209,22 @@ void GUI::getsurah(std::string buffer)
         parsed_data.push_back(QString::fromStdString(j_parsed["data"]["ayahs"][i]["text"].get<std::string>()));
     }
     QTextEdit *gui = new QTextEdit();
-    gui->setText(surah_name);
-    QTextCursor cursor = gui->textCursor();
-    QTextBlockFormat textBlockFormat = cursor.blockFormat();
-    textBlockFormat.setAlignment(Qt::AlignCenter);
-    cursor.mergeBlockFormat(textBlockFormat);
-    gui->setTextCursor(cursor);
-    gui->append("("+surah_translation_name+")");
+    gui->setText(QString::fromStdString(j_parsed["data"]["englishName"].get<std::string>()) + " ("+ QString::fromStdString(j_parsed["data"]["englishNameTranslation"].get<std::string>()); +")");
     gui->append("\n");
     for(QString ayah : parsed_data)
     {
         QString data =  QString::fromStdString(std::to_string(count)) + ". " + ayah;
-        gui->append(data);
+        gui->append(data + "\n");
         count++;
     }
-    gui->append("\n");
     gui->append("Edition : " + QString::fromStdString(j_parsed["data"]["edition"]["name"]));
+    QTextCursor cursor = gui->textCursor();
+    QTextBlockFormat textBlockFormat = cursor.blockFormat();
+    textBlockFormat.setAlignment(Qt::AlignCenter);
+    cursor.mergeBlockFormat(textBlockFormat);
+    gui->selectAll();
+    gui->setFontPointSize(32);
+    gui->setTextCursor(cursor);
     gui->setReadOnly(true);
     QWidget *widget = new QWidget();
     QHBoxLayout *layout = new QHBoxLayout();
@@ -226,26 +237,34 @@ void help_menu()
 {
     std::cout << " Usage: qCLI [OPT] [arg] " << std::endl;
     std::cout << " OPTions:- " << std::endl;
-    std::cout << "\t --g: " << std::endl;
-    std::cout << "\t\t [arg]:- " <<std::endl;
-    std::cout << "\t\t\t [surah] or [surah]:[ayah] for a single ayah " << std::endl;
-    std::cout << "\t\t\t [surah] and [ayah] must be integer " << std::endl;
-    std::cout << "\t\t\t Eg:- qCLI --g 1:1 , returns surah Al-Fatiha Verse 1 " << std::endl;
+    std::cout << "\t --o: " << std::endl;
+    std::cout << "\t\t[arg]:- " <<std::endl;
+    std::cout << "\t\t\t[surah] or [surah]:[ayah] for a single ayah with {optional[translation]} " << std::endl;
+    std::cout << "\t\t\t[surah] and [ayah] must be integer " << std::endl;
+    std::cout << "\t\t\tEg:- " << std::endl;
+    std::cout << "\t\t\t   qCLI --o 1 , return surah Al-Fatiha without any translation " << std::endl;
+    std::cout << "\t\t\t   qCLI --o 1:1 sahih , returns surah Al-Fatiha Verse 1 in saheeh international english translation" << std::endl;
+    std::cout << "\t\t\t   qCLI --o 1 sahih , returns surah Al-Fatiha " << std::endl;
+    std::cout << "\t --h : " << std::endl;
+    std::cout << "\t\t show this help menu and exit " << std::endl;
     std::cout << "\t --i: " << std::endl;
     std::cout << "\t\t Not available yet " << std::endl;
+    std::cout << "\t --t: " << std::endl;
+    std::cout << "\t\t List of available translations " << std::endl;
 }
 
-int check_option(char *argv[], int x)
+int check_option(int argc, char *argv[], int x)
 {
     std::string url_ayah = "https://api.alquran.cloud/v1/ayah/";
     std::string url_surah = "https://api.alquran.cloud/v1/surah/";
-    
+    std::string edition = "quran-simple-enhanced";
+
     if(argv[x][2] == 'i') // --i
     {
         std::cout << " Not Available yet " << std::endl;
         exit(0);
     } 
-    else if(argv[x][2] == 'g') // --g
+    else if(argv[x][2] == 'o' && argc >= 3) // --o
     {    
         if(isSurah(argv[x+1]))
         {
@@ -253,9 +272,14 @@ int check_option(char *argv[], int x)
             {
                 std::cout << "\n [surah] must be an integer , provided value = " << argv[x+1] << std::endl;
                 exit(0);
-            } else {
+            } else 
+            {
+                if(argc == 4)
+                {
+                    edition = return_edition(static_cast<std::string>(argv[x+2]));
+                }
                 url_surah.append(argv[x+1]);
-                url_surah.append("/en.sahih");
+                url_surah.append("/"+edition);
                 GUI Surah_GUI(url_surah);
                 Surah_GUI.process_request(1);
             }
@@ -273,10 +297,20 @@ int check_option(char *argv[], int x)
                 Ayah_GUI.process_request(0);
             }
         }
+    }
+    else if(argv[x][2] == 'h')
+    {
+        help_menu();
+        exit(0);
+    }
+    else if(argv[x][2] == 't')
+    {
+        tr_help();
+        exit(0);
     } 
     else 
     {
-        help_menu();
+        std::cout << " Invalid option provided or insufficient arguements , use --h to show help menu " << std::endl;
         exit(0);
     }
     return x;
