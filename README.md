@@ -3,7 +3,9 @@
 بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ ,
 السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ
 
-qAPP is an easy to use quran reader with indian languages and english translation support . Made with Qt5
+qAPP is an easy to use quran reader with support for translation in multiple languages . Made with Qt5 .
+
+Inspired by the Discord IslamBot Project (https://github.com/galacticwarrior9/IslamBot)
 
 **Dependencies**
 
