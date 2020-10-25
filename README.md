@@ -10,6 +10,10 @@ qAPP is an easy to use quran reader with support for translation in multiple lan
 
 Inspired by the Discord IslamBot Project (https://github.com/galacticwarrior9/IslamBot)
 
+**Screenshots**
+
+![Screenshot 1](https://user-images.githubusercontent.com/72482273/97117939-06cd0a00-172d-11eb-96d8-d80272441425.png)
+
 **Dependencies**
 
 `libcurl4-openssl-dev , qt5-default, nlohmann json`
