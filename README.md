@@ -11,6 +11,7 @@ An easy to use quran reader with indian languages and english translation suppor
 
 **Installation**
 
+*  Install Dependencies and follow the below steps
 1. clone the repo and cd to repo folder
 2. qmake
 3. run `make` , it will compile the program
