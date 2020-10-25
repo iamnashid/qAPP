@@ -5,8 +5,6 @@
    * std::size_t WriteMemoryCallback(char* , std::size_t, std::size_t, std::string)
    *    Function to store the contents of GET Request into MEMORY instead of stdout
    *
-   * std::size_t write_data(void* , std::size_t, std::size_t, void*)
-   *    Function to store the contents of GET request into FILE instead of stdout
 ***/
 
 #include "parser.h"
@@ -23,12 +21,6 @@ std::size_t Parser::WriteMemoryCallback(char *in, std::size_t size, std::size_t 
         return total_size;
     }
     return 0;
-}
-
-std::size_t write_data(void *ptr, std::size_t size, std::size_t nmemb, void *stream)
-{
-    std::size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
-    return written;
 }
 
 std::string Parser::curl_process()
