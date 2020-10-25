@@ -50,54 +50,19 @@
 ***/
   
 #include <QtWidgets/QApplication>
-#include <QtCore/QString>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QTextEdit>
-#include <QtGui/QTextCursor>
-#include <QtGui/QTextBlockFormat>
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
 #include <cstdio>
-#include <vector>
-#include "json.hpp"
+#include "parser.h"
+#include "interfaces.h"
 #include "translations.h"
-
-using json = nlohmann::json;
 
 void help_menu();
 int check_option(int argc, char *argv[], int x);
 bool isSurah(char *arg);
 bool isInt(char *arg);
-
-
-class Parser {
-protected:
-    std::string url;
-    std::string curl_process();
-    static std::size_t WriteMemoryCallback(char *in, std::size_t size, std::size_t nmemb, std::string *out);
-    static std::size_t write_data(void *ptr, std::size_t size, std::size_t nmemb, void *stream);
-};
-
-class GUI : protected Parser 
-{
-public:
-    GUI(const std::string link)
-    {
-        this->url = link;
-    }
-    void process_request(int requestType);
-    void getayah(std::string buffer);
-    void getsurah(std::string buffer);
-};
-
-class CLI : protected Parser 
-{
-public:
-    void main_menu();
-};
-
+void process_online_option(int argc, char *argv[], int x);
 
 int main(int argc, char *argv[])
 {
@@ -124,118 +89,6 @@ int main(int argc, char *argv[])
     return qCLI.exec();
 }
 
-std::size_t Parser::WriteMemoryCallback(char *in, std::size_t size, std::size_t nmemb, std::string *out)
-{
-    std::size_t total_size = size * nmemb;
-    if(total_size)
-    {
-        out->append(in, total_size);
-        return total_size;
-    }
-    return 0;
-}
-
-std::size_t write_data(void *ptr, std::size_t size, std::size_t nmemb, void *stream)
-{
-    std::size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
-    return written;
-}
-
-std::string Parser::curl_process()
-{
-    std::string str_buffer;
-    CURL *curl_handler = curl_easy_init();
-    CURLcode res;
-
-    if(curl_handler)
-    {
-        curl_easy_setopt(curl_handler, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl_handler, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-        curl_easy_setopt(curl_handler, CURLOPT_WRITEDATA, &str_buffer);
-        res = curl_easy_perform(curl_handler);
-        if(res != CURLE_OK)
-        {
-            std::cerr << " curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
-            exit(1);
-        } 
-        else 
-        {   
-            curl_easy_cleanup(curl_handler);
-            return str_buffer;
-        } 
-    }
-    return ("Null");
-}
-
-void GUI::process_request(int requestType)
-{
-    if(requestType == 0)
-    {
-        this->getayah(this->curl_process());
-    } else if(requestType == 1) {
-        this->getsurah(this->curl_process());
-    }
-}
-
-void GUI::getayah(std::string buffer)
-{
-    json j_parsed = json::parse(buffer);
-    QTextEdit *gui = new QTextEdit();
-    // surah Name and Name meaning
-    gui->setText(QString::fromStdString(j_parsed["data"]["surah"]["englishName"].get<std::string>()) + " " + "(" + QString::fromStdString(j_parsed["data"]["surah"]["englishNameTranslation"].get<std::string>()) + ")" + "\n");
-    QTextCursor cursor = gui->textCursor();
-    QTextBlockFormat textBlockFormat = cursor.blockFormat();
-    textBlockFormat.setAlignment(Qt::AlignCenter);
-    cursor.mergeBlockFormat(textBlockFormat);
-    gui->setTextCursor(cursor);
-    gui->append(QString::fromStdString(j_parsed["data"]["text"].get<std::string>()));
-    gui->setReadOnly(true);
-    QWidget *widget = new QWidget();
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(gui);
-    widget->setLayout(layout);
-    widget->show();
-}
-
-void GUI::getsurah(std::string buffer)
-{
-    json j_parsed = json::parse(buffer);
-    int ayahs = j_parsed["data"]["ayahs"].size(); // Number of ayahs
-    std::vector<QString>parsed_data;
-    int count = 1;
-    for(int i=0;i<ayahs;i++)
-    {
-        // push each ayah into vector
-        parsed_data.push_back(QString::fromStdString(j_parsed["data"]["ayahs"][i]["text"].get<std::string>())); 
-    }
-    QTextEdit *gui = new QTextEdit();
-    // surah Name and Name Meaning
-    gui->setText(QString::fromStdString(j_parsed["data"]["englishName"].get<std::string>()) + " ("+ QString::fromStdString(j_parsed["data"]["englishNameTranslation"].get<std::string>()) +")");
-    gui->append("\n");
-    for(QString ayah : parsed_data)
-    {
-        QString data =  QString::fromStdString(std::to_string(count)) + ". " + ayah;
-        gui->append(data + "\n");
-        count++;
-    }
-    // Edition Name
-    gui->append("Edition : " + QString::fromStdString(j_parsed["data"]["edition"]["name"]));
-    QTextCursor cursor = gui->textCursor();
-    QTextBlockFormat textBlockFormat = cursor.blockFormat();
-    textBlockFormat.setAlignment(Qt::AlignCenter);
-    cursor.mergeBlockFormat(textBlockFormat);
-    gui->selectAll();
-    // Set Font Size
-    gui->setFontPointSize(32);
-    gui->setTextCursor(cursor);
-    gui->setReadOnly(true);
-    QWidget *widget = new QWidget();
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(gui);
-    widget->setLayout(layout);
-    widget->show();
-}
-
 void help_menu()
 {
     std::cout << " Usage: qCLI [OPT] [arg] " << std::endl;
@@ -258,10 +111,6 @@ void help_menu()
 
 int check_option(int argc, char *argv[], int x)
 {
-    std::string url_ayah = "https://api.alquran.cloud/v1/ayah/";
-    std::string url_surah = "https://api.alquran.cloud/v1/surah/";
-    std::string edition = "quran-simple-enhanced";
-
     if(argv[x][2] == 'i') // --i
     {
         std::cout << " Not Available yet " << std::endl;
@@ -269,42 +118,7 @@ int check_option(int argc, char *argv[], int x)
     } 
     else if(argv[x][2] == 'o' && argc >= 3) // --o
     {    
-        if(isSurah(argv[x+1]))
-        {
-            if(atoi(argv[x+1]) == 0)
-            {
-                std::cout << "\n [surah] must be an integer , provided value = " << argv[x+1] << std::endl;
-                exit(0);
-            } else 
-            {
-                if(argc == 4)
-                {
-                    edition = return_edition(static_cast<std::string>(argv[x+2]));
-                }
-                url_surah.append(argv[x+1]);
-                url_surah.append("/"+edition);
-                GUI Surah_GUI(url_surah);
-                Surah_GUI.process_request(1);
-            }
-        } 
-        else 
-        {
-            if(!isInt(argv[x+1]))
-            {
-                std::cout << "\n [surah] and [ayah] must be an integer , provided value = " << argv[x+1] << std::endl;
-                exit(0);
-            } else 
-            {                
-                if(argc == 4)
-                {
-                    edition = return_edition(static_cast<std::string>(argv[x+2]));
-                }
-                url_ayah.append(argv[x+1]);
-                url_ayah.append("/"+edition);
-                GUI Ayah_GUI(url_ayah);
-                Ayah_GUI.process_request(0);
-            }
-        }
+        process_online_option(argc,argv,x);
     }
     else if(argv[x][2] == 'h')
     {
@@ -323,6 +137,53 @@ int check_option(int argc, char *argv[], int x)
     }
     return x;
 }
+
+void process_online_option(int argc, char *argv[], int x)
+{
+    std::string url_ayah = "https://api.alquran.cloud/v1/ayah/";
+    std::string url_surah = "https://api.alquran.cloud/v1/surah/";
+    std::string edition = "quran-simple-enhanced";
+
+    if(isSurah(argv[x+1]))
+    {
+        if(atoi(argv[x+1]) == 0)
+        {
+            std::cout << "\n [surah] must be an integer , provided value = " << argv[x+1] << std::endl;
+            exit(0);
+        } 
+        else 
+        {
+            if(argc == 4)
+            {
+                edition = return_edition(static_cast<std::string>(argv[x+2]));
+            }
+            url_surah.append(argv[x+1]);
+            url_surah.append("/"+edition);
+            GUI Surah_GUI(url_surah);
+            Surah_GUI.process_request(1);
+        }
+    } 
+    else 
+    {
+        if(!isInt(argv[x+1]))
+        {
+            std::cout << "\n [surah] and [ayah] must be an integer , provided value = " << argv[x+1] << std::endl;
+            exit(0);
+        } 
+        else 
+        {                
+            if(argc == 4)
+            {
+                edition = return_edition(static_cast<std::string>(argv[x+2]));
+            }
+            url_ayah.append(argv[x+1]);
+            url_ayah.append("/"+edition);
+            GUI Ayah_GUI(url_ayah);
+            Ayah_GUI.process_request(0);
+        }
+    }
+}
+
 
 bool isSurah(char *arg)
 {
@@ -353,3 +214,4 @@ bool isInt(char *arg)
     }
     return false;
 }
+
