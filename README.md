@@ -1,6 +1,6 @@
 # qAPP
 
-An easy to use quran reader made with Qt5
+An easy to use quran reader with indian languages and english translation support . Made with Qt5
 
 **Dependencies**
 
