@@ -1,7 +1,7 @@
 /***
-   * Project Name : qCLI_qt4
-   * Description : an easy to use Quran Translation Reading program , supports both CLI and GUI
-   * Build-Dependencies : libcurl , qt4 libs, nlohmann json : https://github.com/nlohmann/json/
+   * Project Name : qAPP
+   * Description : an easy to use Quran Translation Reading program in Qt5, supports both CLI and GUI
+   * Build-Dependencies : libcurl , qt5 libs, nlohmann json : https://github.com/nlohmann/json/
    * Developer : Nashid
    * Project Status : Alpha
    *
@@ -38,14 +38,13 @@
    *
 ***/
   
-
-#include <QApplication>
-#include <QString>
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QTextEdit>
-#include <QTextCursor>
-#include <QTextBlockFormat>
+#include <QtWidgets/QApplication>
+#include <QtCore/QString>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QTextEdit>
+#include <QtGui/QTextCursor>
+#include <QtGui/QTextBlockFormat>
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
@@ -76,17 +75,15 @@ public:
     {
         this->url = link;
     }
-    void process_gui(int requestType);
-    void getayah_gui(std::string buffer);
-    void getsurah_gui(std::string buffer);
+    void process_request(int requestType);
+    void getayah(std::string buffer);
+    void getsurah(std::string buffer);
 };
 
 class CLI : protected Parser 
 {
 public:
     void main_menu();
-    void getayah_cli(std::string buffer);
-    void getsurah_cli(std::string buffer);
 };
 
 
@@ -139,6 +136,7 @@ std::string Parser::curl_process()
             return str_buffer;
         } 
     }
+    return ("Null");
 }
 
 
@@ -153,23 +151,17 @@ std::size_t Parser::WriteMemoryCallback(char *in, std::size_t size, std::size_t 
     return 0;
 }
 
-void CLI::main_menu()
-{
-    system("clear");
-    std::cout << " Welcome to qCLI " << std::endl;
-}
-
-void GUI::process_gui(int requestType)
+void GUI::process_request(int requestType)
 {
     if(requestType == 0)
     {
-        this->getayah_gui(this->curl_process());
+        this->getayah(this->curl_process());
     } else if(requestType == 1) {
-        this->getsurah_gui(this->curl_process());
+        this->getsurah(this->curl_process());
     }
 }
 
-void GUI::getayah_gui(std::string buffer)
+void GUI::getayah(std::string buffer)
 {
     QString surah_name, surah_translation_name, ayah_translation;
     json j_parsed = json::parse(buffer);
@@ -192,7 +184,7 @@ void GUI::getayah_gui(std::string buffer)
     widget->show();
 }
 
-void GUI::getsurah_gui(std::string buffer)
+void GUI::getsurah(std::string buffer)
 {
     QString surah_name, surah_translation_name;
     json j_parsed = json::parse(buffer);
@@ -250,8 +242,7 @@ int check_option(char *argv[], int x)
     
     if(argv[x][2] == 'i') // --i
     {
-        CLI mycli;
-        mycli.main_menu();
+        std::cout << " Not Available yet " << std::endl;
         exit(0);
     } 
     else if(argv[x][2] == 'g') // --g
@@ -266,7 +257,7 @@ int check_option(char *argv[], int x)
                 url_surah.append(argv[x+1]);
                 url_surah.append("/en.sahih");
                 GUI Surah_GUI(url_surah);
-                Surah_GUI.process_gui(1);
+                Surah_GUI.process_request(1);
             }
         } 
         else 
@@ -279,7 +270,7 @@ int check_option(char *argv[], int x)
                 url_ayah.append(argv[x+1]);
                 url_ayah.append("/en.sahih");
                 GUI Ayah_GUI(url_ayah);
-                Ayah_GUI.process_gui(0);
+                Ayah_GUI.process_request(0);
             }
         }
     } 
