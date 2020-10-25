@@ -163,8 +163,8 @@ bool isSurah(char *arg)
 
 bool isInt(char *arg)
 {
-    int arglen = sizeof(arg) / sizeof(arg[0]);
-    int intlen = -1;
+    int arglen = strlen(arg);
+    int intlen = 0;
     for(int i=0;arg[i]!= '\0';i++)
     {
         if((arg[i] >= '0' && arg[i] <= '9') && arglen > 2)
