@@ -188,7 +188,6 @@ void GUI::getayah(std::string buffer)
     textBlockFormat.setAlignment(Qt::AlignCenter);
     cursor.mergeBlockFormat(textBlockFormat);
     gui->setTextCursor(cursor);
-    gui->append(surah_translation_name);
     gui->append(QString::fromStdString(j_parsed["data"]["text"].get<std::string>()));
     gui->setReadOnly(true);
     QWidget *widget = new QWidget();
@@ -209,7 +208,7 @@ void GUI::getsurah(std::string buffer)
         parsed_data.push_back(QString::fromStdString(j_parsed["data"]["ayahs"][i]["text"].get<std::string>()));
     }
     QTextEdit *gui = new QTextEdit();
-    gui->setText(QString::fromStdString(j_parsed["data"]["englishName"].get<std::string>()) + " ("+ QString::fromStdString(j_parsed["data"]["englishNameTranslation"].get<std::string>()); +")");
+    gui->setText(QString::fromStdString(j_parsed["data"]["englishName"].get<std::string>()) + " ("+ QString::fromStdString(j_parsed["data"]["englishNameTranslation"].get<std::string>()) +")");
     gui->append("\n");
     for(QString ayah : parsed_data)
     {
