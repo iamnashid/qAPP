@@ -14,10 +14,9 @@ An easy to use quran reader made with Qt4
 1. clone the repo and cd to repo folder
 2. qmake -project && qmake
 3. open Makefile in a text editor and add `-lcurl` at the end of `LIBS          = $(SUBLIBS)  -L/usr/lib/x86_64-linux-gnu -lQtGui -lQtCore -lpthread` line .
-
-3.1 After edit the line will be : `LIBS          = $(SUBLIBS)  -L/usr/lib/x86_64-linux-gnu -lQtGui -lQtCore -lpthread -lcurl`
-4. `make` , it will compile the program
-5. run the program `./qAPP --h`
+4. After edit the line will be : `LIBS          = $(SUBLIBS)  -L/usr/lib/x86_64-linux-gnu -lQtGui -lQtCore -lpthread -lcurl`
+5. `make` , it will compile the program
+6. run the program `./qAPP --h`
 
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`
