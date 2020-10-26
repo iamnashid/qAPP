@@ -15,6 +15,7 @@ Inspired by the Discord IslamBot Project (https://github.com/galacticwarrior9/Is
 ![screen1](https://user-images.githubusercontent.com/72482273/97190495-cb354d00-17cb-11eb-8f43-0bb2ef8449ea.jpg)
 ![screen2](https://user-images.githubusercontent.com/72482273/97190478-c2447b80-17cb-11eb-87f0-911867f12269.png)
 ![screen3](https://user-images.githubusercontent.com/72482273/97190483-c4a6d580-17cb-11eb-9e87-0f9339a038d5.png)
+![screen4](https://user-images.githubusercontent.com/72482273/97191211-a68da500-17cc-11eb-8792-93aadd174fab.png)
 
 **Dependencies**
 
