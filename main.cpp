@@ -70,7 +70,7 @@ void help_menu()
     std::cout << "\t\t[arg]:- " <<std::endl;
     std::cout << "\t\t\t[surah] for a complete surah or [surah]:[ayah] for a single ayah " << std::endl;
     std::cout << "\t\t\t[surah] and [ayah] must be integer " << std::endl;
-    std::cout << "\t\t\t[surah] [translation] or [surah]:[ayah] [translation] " << std::endl;
+    std::cout << "\t\t\t[surah] [translation] or [surah]:[ayah] [translation] , for translated version " << std::endl;
     std::cout << "\t\t\tEg:- " << std::endl;
     std::cout << "\t\t\t   qapp --o 1 , return surah Al-Fatiha without any translation " << std::endl;
     std::cout << "\t\t\t   qapp --o 1:1 sahih , returns surah Al-Fatiha Verse 1 in saheeh international english translation" << std::endl;
