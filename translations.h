@@ -17,23 +17,24 @@
 void tr_help()
 {
     std::cout << " Supported translations :- \n" << std::endl;
+    std::cout << " Example Usage : qapp --o 1:1 hindi-1 " << std::endl;
     std::cout << "\t English :-" << std::endl;
-    std::cout << "\t\t Translated by Saheeh International : keyword [sahih] " << std::endl;
+    std::cout << "\t\t Translated by Saheeh International = sahih " << std::endl;
     std::cout << "\t Hindi :- " << std::endl;
-    std::cout << "\t\t Translated by Suhel Farooq Khan and Saifur Rahman Nadwi : keyword [hindi-1]" << std::endl;
-    std::cout << "\t\t Translated by Muhammad Farooq Khan and Muhammad Ahmed : keyword [hindi-2]" << std::endl;
+    std::cout << "\t\t Translated by Suhel Farooq Khan and Saifur Rahman Nadwi : hindi-1" << std::endl;
+    std::cout << "\t\t Translated by Muhammad Farooq Khan and Muhammad Ahmed : hindi-2" << std::endl;
     std::cout << "\t Malayalam :- " << std::endl;
-    std::cout << "\t\t Translated by Cheriyamundam Abdul Hameed and Kunhi Mohammed Parappoor : keyword [malayalam]" << std::endl;
+    std::cout << "\t\t Translated by Cheriyamundam Abdul Hameed and Kunhi Mohammed Parappoor : malayalam" << std::endl;
     std::cout << "\t Tamil :- " << std::endl;
-    std::cout << "\t\t Translated by Jan Turst Foundation : keyword [tamil] " << std::endl;
+    std::cout << "\t\t Translated by Jan Turst Foundation : tamil" << std::endl;
     std::cout << "\t Urdu :- " << std::endl;
-    std::cout << "\t\t Translated by Ahmed Ali : keyword [urdu-1] " << std::endl;
-    std::cout << "\t\t Translated by Fateh Muhammad Jalandhry : keyword [urdu-2] " << std::endl;
-    std::cout << "\t\t Translated by Syed Zeeshan Haider Jawadi : keyword [urdu-3] " << std::endl;
-    std::cout << "\t\t Translated by Ahmed Raza Khan : keyword [urdu-4] " << std::endl;
-    std::cout << "\t\t Translated by Tahir ul Qadri : keyword [urdu-5] " << std::endl;
-    std::cout << "\t\t Translated by Muhammad Junagarhi : keyword [urdu-6] " << std::endl;
-    std::cout << "\t\t Translated by Abul A'ala Maududi : keyword [urdu-7] " << std::endl;
+    std::cout << "\t\t Translated by Ahmed Ali : urdu-1" << std::endl;
+    std::cout << "\t\t Translated by Fateh Muhammad Jalandhry : urdu-2" << std::endl;
+    std::cout << "\t\t Translated by Syed Zeeshan Haider Jawadi : urdu-3" << std::endl;
+    std::cout << "\t\t Translated by Ahmed Raza Khan : urdu-4" << std::endl;
+    std::cout << "\t\t Translated by Tahir ul Qadri : urdu-5" << std::endl;
+    std::cout << "\t\t Translated by Muhammad Junagarhi : urdu-6" << std::endl;
+    std::cout << "\t\t Translated by Abul A'ala Maududi : urdu-7" << std::endl;
      
 }
 
