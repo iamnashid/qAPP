@@ -28,7 +28,7 @@ Inspired by the Discord IslamBot Project (https://github.com/galacticwarrior9/Is
 1. clone the repo and cd to repo folder
 2. qmake
 3. run `make` , it will compile the program
-4. run the program `./qAPP --h`
+4. run the program `./qapp --h`
 
 *Note: If you get GTK-Warning failed to load canberra-gtk-module , fix it by*
 `sudo apt install libcanberra-gtk-module`

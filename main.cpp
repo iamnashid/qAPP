@@ -1,10 +1,10 @@
 /***
    * Project Name : qAPP
    * Description : an easy to use Quran Reading program in Qt5, supports translations in indian languages as well
-   *               Specs :- Offline mode [TODO] , Multi-language , easy to use
+   *               Specs :-  Multi-language 
    * Build-Dependencies : libcurl , qt5 libs, nlohmann json : https://github.com/nlohmann/json/
-   * Developer : Nashid
-   * Project Status : Beta
+   * Developer : Noor-Light
+   * Project Status : stable
    *
    * Functions Description:-
    *
@@ -64,16 +64,16 @@ int main(int argc, char *argv[])
 
 void help_menu()
 {
-    std::cout << " Usage: qCLI [OPT] [arg] " << std::endl;
+    std::cout << " Usage: qapp [OPT] [arg] " << std::endl;
     std::cout << " OPTions:- " << std::endl;
     std::cout << "\t --o: " << std::endl;
     std::cout << "\t\t[arg]:- " <<std::endl;
     std::cout << "\t\t\t[surah] or [surah]:[ayah] for a single ayah with {optional[translation]} " << std::endl;
     std::cout << "\t\t\t[surah] and [ayah] must be integer " << std::endl;
     std::cout << "\t\t\tEg:- " << std::endl;
-    std::cout << "\t\t\t   qCLI --o 1 , return surah Al-Fatiha without any translation " << std::endl;
-    std::cout << "\t\t\t   qCLI --o 1:1 sahih , returns surah Al-Fatiha Verse 1 in saheeh international english translation" << std::endl;
-    std::cout << "\t\t\t   qCLI --o 1 sahih , returns surah Al-Fatiha " << std::endl;
+    std::cout << "\t\t\t   qapp --o 1 , return surah Al-Fatiha without any translation " << std::endl;
+    std::cout << "\t\t\t   qapp --o 1:1 sahih , returns surah Al-Fatiha Verse 1 in saheeh international english translation" << std::endl;
+    std::cout << "\t\t\t   qapp --o 1 sahih , returns surah Al-Fatiha " << std::endl;
     std::cout << "\t --h : " << std::endl;
     std::cout << "\t\t show this help menu and exit " << std::endl;
     std::cout << "\t --t: " << std::endl;

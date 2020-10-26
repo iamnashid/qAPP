@@ -2,7 +2,7 @@
 QT += widgets
 
 TEMPLATE = app
-TARGET = qAPP
+TARGET = qapp
 INCLUDEPATH += .
 
 DEFINES += QT_DEPRECATED_WARNINGS
