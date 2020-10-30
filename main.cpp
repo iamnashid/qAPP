@@ -166,18 +166,29 @@ bool isInt(char *arg)
 {
     int arglen = strlen(arg);
     int intlen = 0;
+    bool symbol = false;
     for(int i=0;arg[i]!= '\0';i++)
     {
-        if((arg[i] >= '0' && arg[i] <= '9') && arglen > 2)
+        if((arg[i] >= '0' && arg[i] <= '9') && arglen >= 2)
         {
             intlen++;
         }
         if(arg[i] == ':')
+        {
+            symbol = true;
             continue;
+        }
     }
-    if(intlen == arglen-1)
+    if(intlen == arglen && symbol != true)
     {
         return true;
+    }
+    else if(symbol == true)
+    {
+        if(intlen == arglen-1)
+            return true;
+        else
+            return false;
     }
     return false;
 }
