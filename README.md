@@ -28,8 +28,6 @@ Inspired by the Discord IslamBot Project (https://github.com/galacticwarrior9/Is
 
 **Installation**
 
-*You can grab binary package from releases page*
-
 1. Install Dependencies
 2. clone the repo and cd to repo folder
 3. qmake
