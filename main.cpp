@@ -169,7 +169,7 @@ bool isInt(char *arg)
     bool symbol = false;
     for(int i=0;arg[i]!= '\0';i++)
     {
-        if((arg[i] >= '0' && arg[i] <= '9') && arglen >= 2)
+        if((arg[i] >= '0' && arg[i] <= '9') && arglen >= 1)
         {
             intlen++;
         }
@@ -185,9 +185,9 @@ bool isInt(char *arg)
     }
     else if(symbol == true)
     {
-        if(intlen == arglen-1)
+        if(arglen != 2 && intlen == arglen-1)
             return true;
-        else
+        else if(arglen == 2)
             return false;
     }
     return false;
