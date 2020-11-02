@@ -4,6 +4,9 @@
  * 
  * void process_stream()
  *      load audio url and save it to buffer
+ * 
+ * std::string audio_url(int)
+ *      return mp3 url 
 **/
 
 #include <iostream>
@@ -64,23 +67,20 @@ void audio_stream::process_stream()
     {
         ao_initialize();
         mpg123_init();
-        // mh = mpg123_new(NULL, NULL);
-        // mpg123_open_feed(mh);
+        mh = mpg123_new(NULL, NULL);
+        mpg123_open_feed(mh);
         json j_parsed = json::parse(curl_process());
         int numberOfayahs = j_parsed["data"]["numberOfAyahs"];
+        int surah_number = j_parsed["data"]["number"];
         std::cout << "\n\033[1;34m Stream Info:- " << std::endl;
         std::cout << " Surah Name : " << j_parsed["data"]["englishName"] << std::endl;
+        std::cout << " Surah Number : " << surah_number << std::endl;
         std::cout << " Number of Ayahs : " << numberOfayahs << std::endl;
         std::cout << " Reciter : " << j_parsed["data"]["edition"]["name"] << " (" << j_parsed["data"]["edition"]["englishName"] << " ) \033[0m" << std::endl;
         CURL *curl = curl_easy_init();
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, play_stream);
-        for(int i=0;i<numberOfayahs;i++)
-        {
-            mh = mpg123_new(NULL, NULL);
-            mpg123_open_feed(mh);
-            curl_easy_setopt(curl, CURLOPT_URL, j_parsed["data"]["ayahs"][i]["audio"].get<std::string>().c_str());
-            curl_easy_perform(curl);
-        }
+        curl_easy_setopt(curl, CURLOPT_URL, audio_url(surah_number).c_str());
+        curl_easy_perform(curl);
         curl_easy_cleanup(curl);
         mpg123_close(mh);
         mpg123_delete(mh);
@@ -91,4 +91,27 @@ void audio_stream::process_stream()
     {
         std::cout << "\033[1;31m An error occured , make sure you entered valid surah \033[0m" << std::endl;
     }
+}
+
+std::string audio_stream::audio_url(int surah_number)
+{
+    std::string stream_url = "https://server8.mp3quran.net/afs/";
+    if(surah_number >= 1 && surah_number <=9)
+    {
+        stream_url.append("00");
+        stream_url.append(std::to_string(surah_number));
+        stream_url.append(".mp3");
+    }
+    else if(surah_number >= 10 && surah_number <= 99)
+    {
+        stream_url.append("0");
+        stream_url.append(std::to_string(surah_number));
+        stream_url.append(".mp3");
+    }
+    else if(surah_number >= 100 && surah_number <= 114)
+    {
+        stream_url.append(std::to_string(surah_number));
+        stream_url.append(".mp3");
+    }
+    return stream_url;
 }
