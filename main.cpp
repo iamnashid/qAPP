@@ -78,16 +78,18 @@ void help_menu()
     std::cout << "\t\t\tEg:- " << std::endl;
     std::cout << "\t\t\t   qapp --r 1 , return surah Al-Fatiha without any translation " << std::endl;
     std::cout << "\t\t\t   qapp --r 1:1 sahih , returns surah Al-Fatiha Verse 1 in saheeh international english translation" << std::endl;
-    std::cout << "\t\t\t   qapp --r 1 sahih , returns surah Al-Fatiha " << std::endl;
+    std::cout << "\t\t\t   qapp --r 1 sahih , returns surah Al-Fatiha \n" << std::endl;
     std::cout << "\t --s (Stream): " << std::endl;
     std::cout << "\t\t[arg]:- " << std::endl;
     std::cout << "\t\t\t[surah] stream complete surah " << std::endl;
     std::cout << "\t\t\tEg:- " << std::endl;
-    std::cout << "\t\t\t   qapp --s 1 , stream surah Al-Fatiha , recitation of Mishary Alafasy " << std::endl;
+    std::cout << "\t\t\t   qapp --s 1 , stream surah Al-Fatiha , recitation of Mishary Alafasy \n" << std::endl;
     std::cout << "\t --h (Help): " << std::endl;
-    std::cout << "\t\t show this help menu and exit " << std::endl;
+    std::cout << "\t\t show this help menu and exit \n" << std::endl;
     std::cout << "\t --t (Translations): " << std::endl;
-    std::cout << "\t\t List of available translations " << std::endl;
+    std::cout << "\t\t List of available translations \n" << std::endl;
+    std::cout << "\t --l (List): " << std::endl;
+    std::cout << "\t\t List all surah and their number , number should be used as [surah] arg for other options " << std::endl;
 }
 
 int check_option(int argc, char *argv[], int x)
@@ -123,9 +125,17 @@ int check_option(int argc, char *argv[], int x)
                 url_surah.append("/ar.alafasy");
                 audio_stream newstream(url_surah);
                 newstream.process_stream();
+                std::cout << "\033[1;32m Stream ended \033[0m " << std::endl;
                 exit(0);
             }
         }
+    }
+    else if(argv[x][2] == 'l')
+    {
+        std::string meta = "https://api.alquran.cloud/v1/meta";
+        GUI metadata(meta);
+        metadata.process_request(2);
+        exit(0);
     } 
     else 
     {
