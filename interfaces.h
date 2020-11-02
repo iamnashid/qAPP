@@ -11,6 +11,7 @@ public:
     void process_request(int requestType);
     void getayah(std::string buffer);
     void getsurah(std::string buffer);
+    void list_surah(std::string buffer);
 };
 
 #endif
