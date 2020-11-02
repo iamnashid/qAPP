@@ -30,6 +30,7 @@
 #include "parser.h"
 #include "interfaces.h"
 #include "translations.h"
+#include "audio_stream.h"
 
 void help_menu();
 int check_option(int argc, char *argv[], int x);
@@ -66,25 +67,29 @@ void help_menu()
 {
     std::cout << " Usage: qapp [OPT] [arg] " << std::endl;
     std::cout << " OPTions:- " << std::endl;
-    std::cout << "\t --o: " << std::endl;
+    std::cout << "\t --r (Read): " << std::endl;
     std::cout << "\t\t[arg]:- " <<std::endl;
     std::cout << "\t\t\t[surah] for a complete surah or [surah]:[ayah] for a single ayah " << std::endl;
     std::cout << "\t\t\t[surah] and [ayah] must be integer " << std::endl;
     std::cout << "\t\t\t[surah] [translation] or [surah]:[ayah] [translation] , for translated version " << std::endl;
     std::cout << "\t\t\tEg:- " << std::endl;
-    std::cout << "\t\t\t   qapp --o 1 , return surah Al-Fatiha without any translation " << std::endl;
-    std::cout << "\t\t\t   qapp --o 1:1 sahih , returns surah Al-Fatiha Verse 1 in saheeh international english translation" << std::endl;
-    std::cout << "\t\t\t   qapp --o 1 sahih , returns surah Al-Fatiha " << std::endl;
-    std::cout << "\t --h : " << std::endl;
+    std::cout << "\t\t\t   qapp --r 1 , return surah Al-Fatiha without any translation " << std::endl;
+    std::cout << "\t\t\t   qapp --r 1:1 sahih , returns surah Al-Fatiha Verse 1 in saheeh international english translation" << std::endl;
+    std::cout << "\t\t\t   qapp --r 1 sahih , returns surah Al-Fatiha " << std::endl;
+    std::cout << "\t --s (Stream): " << std::endl;
+    std::cout << "\t\t[arg]:- " << std::endl;
+    std::cout << "\t\t\t[surah] stream complete surah " << std::endl;
+    std::cout << "\t\t\tEg:- " << std::endl;
+    std::cout << "\t\t\t   qapp --s 1 , stream surah Al-Fatiha , recitation of Mishary Alafasy " << std::endl;
+    std::cout << "\t --h (Help): " << std::endl;
     std::cout << "\t\t show this help menu and exit " << std::endl;
-    std::cout << "\t --t: " << std::endl;
+    std::cout << "\t --t (Translations): " << std::endl;
     std::cout << "\t\t List of available translations " << std::endl;
 }
 
 int check_option(int argc, char *argv[], int x)
 {
-
-    if(argv[x][2] == 'o' && argc >= 3) // --o
+    if(argv[x][2] == 'r' && argc >= 3) // --o
     {    
         process_option(argc,argv,x);
     }
@@ -97,10 +102,30 @@ int check_option(int argc, char *argv[], int x)
     {
         tr_help();
         exit(0);
+    }
+    else if(argv[x][2] == 's')
+    {
+        std::string url_surah = "https://api.alquran.cloud/v1/surah/";
+        if(isSurah(argv[x+1]))
+        {
+            if(!isInt(argv[x+1]))
+            {
+                std::cout << "\n [surah] must be an integer , provided value = " << argv[x+1] << std::endl;
+                exit(0);   
+            }
+            else
+            {
+                url_surah.append(argv[x+1]);
+                url_surah.append("/ar.alafasy");
+                audio_stream newstream(url_surah);
+                newstream.process_stream();
+                exit(0);
+            }
+        }
     } 
     else 
     {
-        std::cout << " Invalid option provided or insufficient arguements , use --h to show help menu " << std::endl;
+        std::cout << " Invalid option provided or insufficient arguements , use --h to show help menu " << std::endl; 
         exit(0);
     }
     return x;
