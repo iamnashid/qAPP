@@ -1,3 +1,11 @@
+/**
+ * std::size_t play_stream(params)
+ *      play audio from curl buffer
+ * 
+ * void process_stream()
+ *      load audio url and save it to buffer
+**/
+
 #include <iostream>
 #include <curl/curl.h>
 #include <mpg123.h>
@@ -52,24 +60,35 @@ std::size_t audio_stream::play_stream(void *buffer, std::size_t size, std::size_
 
 void audio_stream::process_stream()
 {
-    ao_initialize();
-    mpg123_init();
-    mh = mpg123_new(NULL, NULL);
-    mpg123_open_feed(mh);
-    json j_parsed = json::parse(curl_process());
-    int numberOfayahs = j_parsed["data"]["numberOfAyahs"];
-    std::cout << numberOfayahs << std::endl;
-    CURL *curl = curl_easy_init();
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, play_stream);
-    for(int i=0;i<numberOfayahs;i++)
+    try
     {
-        curl_easy_setopt(curl, CURLOPT_URL, j_parsed["data"]["ayahs"][i]["audio"].get<std::string>().c_str());
-        curl_easy_perform(curl);
+        ao_initialize();
+        mpg123_init();
+        // mh = mpg123_new(NULL, NULL);
+        // mpg123_open_feed(mh);
+        json j_parsed = json::parse(curl_process());
+        int numberOfayahs = j_parsed["data"]["numberOfAyahs"];
+        std::cout << "\n\033[1;34m Stream Info:- " << std::endl;
+        std::cout << " Surah Name : " << j_parsed["data"]["englishName"] << std::endl;
+        std::cout << " Number of Ayahs : " << numberOfayahs << std::endl;
+        std::cout << " Reciter : " << j_parsed["data"]["edition"]["name"] << " (" << j_parsed["data"]["edition"]["englishName"] << " ) \033[0m" << std::endl;
+        CURL *curl = curl_easy_init();
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, play_stream);
+        for(int i=0;i<numberOfayahs;i++)
+        {
+            mh = mpg123_new(NULL, NULL);
+            mpg123_open_feed(mh);
+            curl_easy_setopt(curl, CURLOPT_URL, j_parsed["data"]["ayahs"][i]["audio"].get<std::string>().c_str());
+            curl_easy_perform(curl);
+        }
+        curl_easy_cleanup(curl);
+        mpg123_close(mh);
+        mpg123_delete(mh);
+        mpg123_exit();
+        ao_close(dev);
+        ao_shutdown();
+    } catch( nlohmann::detail::type_error &err)
+    {
+        std::cout << "\033[1;31m An error occured , make sure you entered valid surah \033[0m" << std::endl;
     }
-    curl_easy_cleanup(curl);
-    mpg123_close(mh);
-    mpg123_delete(mh);
-    mpg123_exit();
-    ao_close(dev);
-    ao_shutdown();
 }

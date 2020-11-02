@@ -1,9 +1,9 @@
 /***
    * Project Name : qAPP
-   * Description : an easy to use Quran Reading program in Qt5, supports translations in indian languages as well
-   *               Specs :-  Multi-language 
-   * Build-Dependencies : libcurl , qt5 libs, nlohmann json : https://github.com/nlohmann/json/
-   * Developer : Noor-Light
+   * Description : an easy to use Quran Reading program in Qt5, supports translations in indian languages as well as quran audio streaming
+   *               Specs :-  Multi-language , stream quran
+   * Build-Dependencies : libcurl , qt5 libs, nlohmann json : https://github.com/nlohmann/json/ , libao-dev , libmpg123-dev
+   * Developer : L337
    * Project Status : stable
    *
    * Functions Description:-
@@ -20,6 +20,9 @@
    * int isInt(char *arg)
    *    check if the given argument is Integers , related to ayah processing
    *    return true if all chars except ':' are integers
+   * 
+   * void process_option(int argc, char *argv[], int x)
+   *    pass arguments and process them accordingly , show either surah or ayah
 ***/
 
 #include <QtWidgets/QApplication>
@@ -110,11 +113,12 @@ int check_option(int argc, char *argv[], int x)
         {
             if(!isInt(argv[x+1]))
             {
-                std::cout << "\n [surah] must be an integer , provided value = " << argv[x+1] << std::endl;
+                std::cout << "\n\033[1;31m [surah] must be an integer , provided value = " << argv[x+1] << "\033[0m" << std::endl;
                 exit(0);   
             }
             else
             {
+                std::cout << "\033[1;32m Streaming .... \033[0m" << std::endl;
                 url_surah.append(argv[x+1]);
                 url_surah.append("/ar.alafasy");
                 audio_stream newstream(url_surah);
@@ -125,7 +129,7 @@ int check_option(int argc, char *argv[], int x)
     } 
     else 
     {
-        std::cout << " Invalid option provided or insufficient arguements , use --h to show help menu " << std::endl; 
+        std::cout << "\033[1;31m Invalid option provided or insufficient arguements , use --h to show help menu \033[0m" << std::endl; 
         exit(0);
     }
     return x;
@@ -160,11 +164,11 @@ void process_option(int argc, char *argv[], int x)
     {
         if(!isInt(argv[x+1]))
         {
-            std::cout << "\n [surah] and [ayah] must be an integer , provided value = " << argv[x+1] << std::endl;
+            std::cout << "\n\033[1;31m [surah] and [ayah] must be an integer , provided value = " << argv[x+1] << "\033[0m" << std::endl;
             exit(0);
         } 
         else 
-        {                
+        {
             if(argc == 4)
             {
                 edition = return_edition(static_cast<std::string>(argv[x+2]));
@@ -217,4 +221,3 @@ bool isInt(char *arg)
     }
     return false;
 }
-

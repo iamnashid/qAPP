@@ -6,7 +6,7 @@
 بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ ,
 السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ
 
-qAPP is an easy to use quran reader with support for translation in multiple languages . Made with Qt5 .
+qAPP is an easy to use quran reader with support for translation in multiple languages and stream beautiful quran recitation . Made with Qt5 .
 
 Inspired by the Discord IslamBot Project (https://github.com/galacticwarrior9/IslamBot)
 
@@ -21,10 +21,12 @@ Inspired by the Discord IslamBot Project (https://github.com/galacticwarrior9/Is
 
 **Dependencies**
 
-`libcurl4-openssl-dev , qt5-default, nlohmann json`
+`libcurl4-openssl-dev , qt5-default, nlohmann json, libpmg123-dev, libao-dev`
 * libcurl installation = `sudo apt install libcurl4-openssl-dev`
 * nlohmann json = https://github.com/nlohmann/json/releases , Download the latest release and put it in the source folder . Make sure header name is json.hpp
 * Qt5 = `sudo apt install qt5-default`
+* libmpg123 installation = `sudo apt install libmpg123-dev libmpg123-0`
+* libao installation = `sudo apt install libao-dev libao4`
 
 **Installation**
 
