@@ -13,6 +13,7 @@
 
 #include <QtWidgets/QApplication>
 #include <QtCore/QString>
+#include <QtCore/QSize>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QTextEdit>
@@ -48,13 +49,16 @@ void GUI::getayah(std::string buffer)
         json parse_ayah = json::parse(buffer);
         QTextEdit *gui = new QTextEdit();
         // surah Name and Name meaning
-        gui->setText(QString::fromStdString(parse_ayah["data"]["surah"]["englishName"].get<std::string>()) + " " + "(" + QString::fromStdString(parse_ayah["data"]["surah"]["englishNameTranslation"].get<std::string>()) + ")" + "\n");
+        gui->setText(QString::fromStdString(parse_ayah["data"]["surah"]["name"].get<std::string>()));
         QTextCursor cursor = gui->textCursor();
         QTextBlockFormat textBlockFormat = cursor.blockFormat();
         textBlockFormat.setAlignment(Qt::AlignCenter);
         cursor.mergeBlockFormat(textBlockFormat);
-        gui->setTextCursor(cursor);
+        gui->append("(" + QString::fromStdString(parse_ayah["data"]["surah"]["englishNameTranslation"].get<std::string>()) + ")" + "\n");
         gui->append(QString::fromStdString(parse_ayah["data"]["text"].get<std::string>()));
+        gui->selectAll();
+        gui->setFontPointSize(16);
+        gui->setTextCursor(cursor);
         gui->setReadOnly(true);
         QWidget *widget = new QWidget();
         QHBoxLayout *layout = new QHBoxLayout();
@@ -83,23 +87,20 @@ void GUI::getsurah(std::string buffer)
         }
         QTextEdit *gui = new QTextEdit();
         // surah Name and Name Meaning
-        gui->setText(QString::fromStdString(parse_surah["data"]["englishName"].get<std::string>()) + " ("+ QString::fromStdString(parse_surah["data"]["englishNameTranslation"].get<std::string>()) +")");
-        gui->append("\n");
+        gui->setText(QString::fromStdString(parse_surah["data"]["name"].get<std::string>()) + "\n");
+        QTextCursor cursor = gui->textCursor();
+        QTextBlockFormat textBlockFormat = cursor.blockFormat();
+        textBlockFormat.setAlignment(Qt::AlignCenter);
+        cursor.mergeBlockFormat(textBlockFormat);
         for(QString ayah : parsed_data)
         {
             QString data =  QString::fromStdString(std::to_string(count)) + ". " + ayah;
             gui->append(data + "\n");
             count++;
         }
-        // Edition Name
         gui->append("Edition : " + QString::fromStdString(parse_surah["data"]["edition"]["name"]));
-        QTextCursor cursor = gui->textCursor();
-        QTextBlockFormat textBlockFormat = cursor.blockFormat();
-        textBlockFormat.setAlignment(Qt::AlignCenter);
-        cursor.mergeBlockFormat(textBlockFormat);
         gui->selectAll();
-        // Set Font Size
-        gui->setFontPointSize(32);
+        gui->setFontPointSize(16);
         gui->setTextCursor(cursor);
         gui->setReadOnly(true);
         QWidget *widget = new QWidget();
