@@ -64,6 +64,8 @@ void GUI::getayah(std::string buffer)
         QHBoxLayout *layout = new QHBoxLayout();
         layout->addWidget(gui);
         widget->setLayout(layout);
+        widget->setMinimumHeight(558);
+        widget->setMinimumWidth(558);
         widget->show();
     } catch( nlohmann::detail::type_error &err)
     {
@@ -107,6 +109,8 @@ void GUI::getsurah(std::string buffer)
         QHBoxLayout *layout = new QHBoxLayout();
         layout->addWidget(gui);
         widget->setLayout(layout);
+        widget->setMinimumHeight(558);
+        widget->setMinimumWidth(558);
         widget->show();
     } catch( nlohmann::detail::type_error &err)
     {

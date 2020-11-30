@@ -120,7 +120,7 @@ int check_option(int argc, char *argv[], int x)
             }
             else
             {
-                std::cout << "\033[1;32m Streaming .... \033[0m" << std::endl;
+                std::cout << "\033[1;32m Streaming .... \033[0m";
                 url_surah.append(argv[x+1]);
                 url_surah.append("/ar.alafasy");
                 audio_stream newstream(url_surah);
